@@ -1,0 +1,71 @@
+graph ER {
+  graph [fontname="Helvetica", nodesep=0.35, ranksep=0.65, splines=line, overlap=false];
+  node [fontname="Helvetica", fontsize=11];
+  edge [fontname="Helvetica", fontsize=10, len=1.2];
+
+  // ENTITIES
+  node [shape=box, style=filled, fillcolor="#FFFFFF", color="#222222", penwidth=1.4, margin=0.14];
+  USER_ACC   [label="USER_ACC"];
+  MEMBER     [label="MEMBER"];
+  RANK       [label="RANK"];
+  PRODUCT    [label="PRODUCT"];
+  ORDERS     [label="ORDERS"];
+  ORDER_ITEM [label="ORDER_ITEM"];
+  COMMISSION [label="COMMISSION"];
+  PAYMENT    [label="PAYMENT"];
+
+  // RELATIONSHIPS (diamonds)
+  node [shape=diamond, style=filled, fillcolor="#FFFFFF", color="#222222", penwidth=1.2, margin=0.08, fontsize=10];
+  HAS_ACCOUNT; SPONSORS; HOLDS; PLACES; CONTAINS; INCLUDED_IN; GENERATES; EARNS; RECEIVES;
+
+  // ATTRIBUTES (ellipses)
+  node [shape=ellipse, style=filled, fillcolor="#FFFFFF", color="#555555", penwidth=1.0, margin=0.03, fontsize=9];
+
+  // USER_ACC attrs
+  ua_id [label=<<u>user_id</u>>]; ua_email [label="email"]; ua_pass [label="password"];
+  ua_role [label="role"]; ua_created [label="created_at"];
+  USER_ACC -- ua_id; USER_ACC -- ua_email; USER_ACC -- ua_pass; USER_ACC -- ua_role; USER_ACC -- ua_created;
+
+  // MEMBER attrs
+  m_id [label=<<u>member_id</u>>]; m_name [label="name"]; m_addr [label="address"];
+  m_phone [label="phone"]; m_dob [label="dob"]; m_join [label="join_date"];
+  MEMBER -- m_id; MEMBER -- m_name; MEMBER -- m_addr; MEMBER -- m_phone; MEMBER -- m_dob; MEMBER -- m_join;
+
+  // RANK attrs
+  r_id [label=<<u>rank_id</u>>]; r_name [label="rank_name"]; r_min [label="min_sales"]; r_comm [label="commission_rate"];
+  RANK -- r_id; RANK -- r_name; RANK -- r_min; RANK -- r_comm;
+
+  // PRODUCT attrs
+  p_id [label=<<u>product_id</u>>]; p_name [label="name"]; p_cat [label="category"];
+  p_price [label="price"]; p_stock [label="stock"];
+  PRODUCT -- p_id; PRODUCT -- p_name; PRODUCT -- p_cat; PRODUCT -- p_price; PRODUCT -- p_stock;
+
+  // ORDERS attrs
+  o_id [label=<<u>order_id</u>>]; o_date [label="order_date"]; o_total [label="total_amount"]; o_status [label="status"];
+  ORDERS -- o_id; ORDERS -- o_date; ORDERS -- o_total; ORDERS -- o_status;
+
+  // ORDER_ITEM attrs
+  oi_id [label=<<u>order_item_id</u>>]; oi_qty [label="quantity"]; oi_price [label="price"];
+  ORDER_ITEM -- oi_id; ORDER_ITEM -- oi_qty; ORDER_ITEM -- oi_price;
+
+  // COMMISSION attrs
+  c_id [label=<<u>commission_id</u>>]; c_level [label="level"]; c_amt [label="amount"];
+  c_date [label="commission_date"]; c_status [label="status"];
+  COMMISSION -- c_id; COMMISSION -- c_level; COMMISSION -- c_amt; COMMISSION -- c_date; COMMISSION -- c_status;
+
+  // PAYMENT attrs
+  pay_id [label=<<u>payment_id</u>>]; pay_amt [label="amount"]; pay_date [label="payment_date"];
+  pay_method [label="payment_method"]; pay_status [label="payment_status"];
+  PAYMENT -- pay_id; PAYMENT -- pay_amt; PAYMENT -- pay_date; PAYMENT -- pay_method; PAYMENT -- pay_status;
+
+  // RELATIONSHIP CONNECTIONS with cardinalities
+  USER_ACC -- HAS_ACCOUNT [label="1"]; HAS_ACCOUNT -- MEMBER [label="1"];
+  MEMBER -- SPONSORS [label="1"]; SPONSORS -- MEMBER [label="N"];
+  RANK -- HOLDS [label="1"]; HOLDS -- MEMBER [label="N"];
+  MEMBER -- PLACES [label="1"]; PLACES -- ORDERS [label="N"];
+  ORDERS -- CONTAINS [label="1"]; CONTAINS -- ORDER_ITEM [label="N"];
+  PRODUCT -- INCLUDED_IN [label="1"]; INCLUDED_IN -- ORDER_ITEM [label="N"];
+  ORDERS -- GENERATES [label="1"]; GENERATES -- COMMISSION [label="N"];
+  MEMBER -- EARNS [label="1"]; EARNS -- COMMISSION [label="N"];
+  MEMBER -- RECEIVES [label="1"]; RECEIVES -- PAYMENT [label="N"];
+}

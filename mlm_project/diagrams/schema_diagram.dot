@@ -1,0 +1,68 @@
+digraph Schema {
+  graph [fontname="Helvetica", rankdir=TB, nodesep=0.9, ranksep=1.1, splines=spline];
+  node [shape=plaintext, fontname="Helvetica", fontsize=10];
+  edge [color="#333333", arrowhead=normal, arrowsize=0.7, fontsize=9];
+
+  USER_ACC [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" CELLPADDING="6">
+      <TR><TD COLSPAN="5"><B>USER_ACC</B></TD></TR>
+      <TR><TD PORT="user_id"><U>user_id</U></TD><TD>email</TD><TD>password</TD><TD>role</TD><TD>created_at</TD></TR>
+    </TABLE>>];
+
+  MEMBER [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" CELLPADDING="6">
+      <TR><TD COLSPAN="8"><B>MEMBER</B></TD></TR>
+      <TR><TD PORT="member_id"><U>member_id</U></TD><TD PORT="user_id">user_id</TD><TD PORT="sponsor_id">sponsor_id</TD><TD PORT="rank_id">rank_id</TD><TD>name</TD><TD>address</TD><TD>phone</TD><TD>join_date</TD></TR>
+    </TABLE>>];
+
+  RANK [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" CELLPADDING="6">
+      <TR><TD COLSPAN="4"><B>RANK</B></TD></TR>
+      <TR><TD PORT="rank_id"><U>rank_id</U></TD><TD>rank_name</TD><TD>min_sales</TD><TD>commission_rate</TD></TR>
+    </TABLE>>];
+
+  PRODUCT [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" CELLPADDING="6">
+      <TR><TD COLSPAN="5"><B>PRODUCT</B></TD></TR>
+      <TR><TD PORT="product_id"><U>product_id</U></TD><TD>name</TD><TD>category</TD><TD>price</TD><TD>stock</TD></TR>
+    </TABLE>>];
+
+  ORDERS [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" CELLPADDING="6">
+      <TR><TD COLSPAN="5"><B>ORDERS</B></TD></TR>
+      <TR><TD PORT="order_id"><U>order_id</U></TD><TD PORT="member_id">member_id</TD><TD>order_date</TD><TD>total_amount</TD><TD>status</TD></TR>
+    </TABLE>>];
+
+  ORDER_ITEM [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" CELLPADDING="6">
+      <TR><TD COLSPAN="5"><B>ORDER_ITEM</B></TD></TR>
+      <TR><TD PORT="order_item_id"><U>order_item_id</U></TD><TD PORT="order_id">order_id</TD><TD PORT="product_id">product_id</TD><TD>quantity</TD><TD>price</TD></TR>
+    </TABLE>>];
+
+  COMMISSION [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" CELLPADDING="6">
+      <TR><TD COLSPAN="6"><B>COMMISSION</B></TD></TR>
+      <TR><TD PORT="commission_id"><U>commission_id</U></TD><TD PORT="member_id">member_id</TD><TD PORT="order_id">order_id</TD><TD>level</TD><TD>amount</TD><TD>commission_date</TD></TR>
+    </TABLE>>];
+
+  PAYMENT [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" CELLPADDING="6">
+      <TR><TD COLSPAN="5"><B>PAYMENT</B></TD></TR>
+      <TR><TD PORT="payment_id"><U>payment_id</U></TD><TD PORT="member_id">member_id</TD><TD>amount</TD><TD>payment_date</TD><TD>payment_method</TD></TR>
+    </TABLE>>];
+
+  { rank=same; USER_ACC; RANK; PRODUCT; }
+  { rank=same; MEMBER; }
+  { rank=same; ORDERS; PAYMENT; }
+  { rank=same; ORDER_ITEM; COMMISSION; }
+
+  MEMBER:user:s    -> USER_ACC:user_id:n   [tailport=s, headport=n, label=" FK"];
+  MEMBER:sponsor_id:s -> MEMBER:member_id:s [tailport=s, headport=s, label=" FK (self)", constraint=false];
+  MEMBER:rank_id:s -> RANK:rank_id:n       [tailport=s, headport=n, label=" FK"];
+  ORDERS:member_id:s -> MEMBER:member_id:n [tailport=s, headport=n, label=" FK"];
+  PAYMENT:member_id:s -> MEMBER:member_id:n [tailport=s, headport=n, label=" FK"];
+  ORDER_ITEM:order_id:n   -> ORDERS:order_id:s   [tailport=n, headport=s, label=" FK"];
+  ORDER_ITEM:product_id:s -> PRODUCT:product_id:n [tailport=s, headport=n, label=" FK"];
+  COMMISSION:member_id:n -> MEMBER:member_id:s   [tailport=n, headport=s, label=" FK"];
+  COMMISSION:order_id:n  -> ORDERS:order_id:s    [tailport=n, headport=s, label=" FK"];
+}
